@@ -1,0 +1,120 @@
+// /* eslint-disable react-native/no-inline-styles */
+// import React from 'react';
+// import {FormControl, View} from 'native-base';
+// import BookOutline from '../../svg/book-outline';
+// import HomeIcon from '../../svg/home-outline';
+// import CartIcon from '../../svg/jw-cart-outline';
+// import TrailIcon from '../../svg/trail-sign-outline';
+// import MailIcon from '../../svg/mail-outline';
+// import PhoneIcon from '../../svg/call-outline';
+// import RevisitIcon from '../../svg/people-outline';
+// import {ActivityPropsType, ACTIVITY_TYPE} from '../../types/activities';
+// import CustomSelect from '../../components/CustomSelect';
+// import {useDarkMode} from '../../hooks/useDarkMode';
+
+// type Activity = {
+//   label: string;
+//   value: string;
+//   startIcon: JSX.Element;
+// };
+
+// // TODO: Improve this array.
+// const getActivities = (iconColor: string) => {
+//   const ACTIVITIES: Activity[] = [
+//     {
+//       label: 'De casa en casa',
+//       value: ACTIVITY_TYPE.HOUSE_TO_HOUSE,
+//       startIcon: <HomeIcon size={22} color={iconColor} />,
+//     },
+//     {
+//       label: 'Carrito',
+//       value: ACTIVITY_TYPE.CART,
+//       startIcon: <CartIcon size={22} color={iconColor} />,
+//     },
+//     {
+//       label: 'Calles',
+//       value: ACTIVITY_TYPE.STREET,
+//       startIcon: <TrailIcon size={22} color={iconColor} />,
+//     },
+//     {
+//       label: 'Cartas',
+//       value: ACTIVITY_TYPE.LETTER,
+//       startIcon: <MailIcon size={22} color={iconColor} />,
+//     },
+//     {
+//       label: 'Telefono',
+//       value: ACTIVITY_TYPE.PHONE,
+//       startIcon: <PhoneIcon size={22} color={iconColor} />,
+//     },
+//     {
+//       label: 'Revisita',
+//       value: ACTIVITY_TYPE.REVISIT,
+//       startIcon: <RevisitIcon size={22} color={iconColor} />,
+//     },
+//     {
+//       label: 'Estudio Biblico',
+//       value: ACTIVITY_TYPE.BIBLE_STUDY,
+//       startIcon: <BookOutline size={22} color={iconColor} />,
+//     },
+//   ];
+
+//   return ACTIVITIES;
+// };
+
+// type SelectActivityType = {
+//   formData: ActivityPropsType;
+//   setActivity: (arg0: any) => void;
+//   label: string;
+// };
+
+// const SelectActivity: React.FC<SelectActivityType> = ({
+//   label,
+//   formData,
+//   setActivity,
+// }: SelectActivityType) => {
+//   const {textColor, isDark} = useDarkMode();
+//   const activities = getActivities(textColor);
+//   const selectedIcon = activities.find(
+//     item => item.value === formData.activity,
+//   )?.startIcon;
+
+//   return (
+//     <View style={{marginVertical: 3}}>
+//       <FormControl.Label
+//         style={{marginBottom: 5}}
+//         _text={{
+//           bold: true,
+//           fontSize: 15,
+//         }}>
+//         {label}
+//       </FormControl.Label>
+//       <CustomSelect
+//         leftIcon={selectedIcon}
+//         style={{flex: 1}}
+//         selectedValue={formData.activity}
+//         minWidth="200"
+//         size="lg"
+//         accessibilityLabel="Actividad"
+//         placeholder="Actividad"
+//         _selectedItem={{
+//           bgColor: isDark ? 'gray.500' : 'dark.700',
+//         }}
+//         mt={1}
+//         onValueChange={itemValue => {
+//           setActivity({...formData, activity: itemValue});
+//         }}>
+//         {activities.map((activity: Activity, index: number) => (
+//           <CustomSelect.Item
+//             key={index}
+//             _pressed={{backgroundColor: isDark ? 'gray.500' : 'gray.300'}}
+//             label={activity.label}
+//             value={activity.value}
+//             startIcon={activity.startIcon}
+//           />
+//         ))}
+//       </CustomSelect>
+//     </View>
+//   );
+// };
+
+// export default SelectActivity;

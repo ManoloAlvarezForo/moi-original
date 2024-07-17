@@ -1,0 +1,275 @@
+// /* eslint-disable react-native/no-inline-styles */
+// import React, {useEffect, useState} from 'react';
+// import {StyleSheet} from 'react-native';
+// import {useApolloClient, useQuery} from '@apollo/client';
+// import Loader from '../../components/Loader';
+// import {DEFAULT_REPORT_GQL} from '../Reports/gqlQueries';
+// import ReportDetail from '../Reports/components/ReportDetails/ReportDetail';
+// import {useNavigation} from '@react-navigation/native';
+// import moment from 'moment';
+// import {Text, Button, Fab, AddIcon, ScrollView, View} from 'native-base';
+// import Error from '../../components/Error';
+// import AddActionSheet from './AddActionSheet';
+// // import MonthPicker from '../../components/DatePicker/MonthPicker';
+// import MonthPicker from './MonthPicker';
+
+// import messages from './Home.messages';
+// import Modal from 'react-native-modal';
+// import {ReportType} from '../../types/report';
+// import 'moment/locale/es';
+// import {useOfflineUser} from '../../hooks/useOfflineUser';
+// import {useOfflineReport} from '../../hooks/useOfflineReport';
+// import HeaderTitle from './HeaderTitle';
+// import {useDarkMode} from '../../hooks/useDarkMode';
+// import notifee, {EventType} from '@notifee/react-native';
+// // import ModalPopup from '../../components/CustomModal/CustomModal';
+
+// export default function Home() {
+//   const navigation = useNavigation<any>();
+//   const {userId} = useOfflineUser();
+//   const today = moment().format('dddd LL');
+//   const {cache} = useApolloClient();
+//   const todayTitle = `${today.charAt(0).toUpperCase()}${today.slice(1)}`;
+//   const [openActions, setOpenActions] = useState(false);
+//   const [showModal, setShowModal] = useState(false);
+//   const {loading, error, data} = useQuery(DEFAULT_REPORT_GQL, {
+//     fetchPolicy: 'cache-only',
+//     variables: {userId},
+//   });
+
+//   const {addReport} = useOfflineReport();
+//   const [date, setDate] = useState(moment());
+//   const {themeSecondary} = useDarkMode();
+
+//   const addReportHandler = async () => {
+//     const month = (date.month() + 1).toString();
+//     const year = date.year().toString();
+
+//     addReport(month, year);
+//     //setDefaultReport(firstDefaultReport);
+//   };
+
+//   const onCloseModal = () => {
+//     setShowModal(false);
+//   };
+
+//   const onSelectedDateHandler = () => {
+//     onCloseModal();
+//     setTimeout(() => {
+//       addReportHandler();
+//     }, 1000);
+//   };
+
+//   const {themePrimary} = useDarkMode();
+
+//   useEffect(() => {
+//     return notifee.onForegroundEvent(({type, detail}) => {
+//       switch (type) {
+//         case EventType.DISMISSED:
+//           console.log('User dismissed notification', detail.notification);
+//           break;
+//         case EventType.PRESS:
+//           console.log('User pressed notification', detail.notification);
+//           break;
+//       }
+//     });
+//   }, []);
+
+//   useEffect(() => {
+//     if (data && data?.defaultReport !== null) {
+//       const {month, year} = data?.defaultReport;
+//       const title = `${moment(month, 'M').format('MMMM')} ${year}`;
+//       const parsedTitle = `${title.charAt(0).toUpperCase()}${title.substr(1)}`;
+//       navigation.setOptions({
+//         headerTitle: (props: any) => (
+//           <HeaderTitle title={parsedTitle} {...props} />
+//         ),
+//       });
+//     }
+//   }, [cache, data, navigation]);
+
+//   if (!data) {
+//     // we don't have data yet
+//     if (loading) {
+//       // but we're loading some
+//       return <Loader />;
+//     }
+//     if (error) {
+//       // and we have an error
+//       return <Error />;
+//     }
+//   }
+
+//   const emptyView = (
+//     <View
+//       style={{
+//         flex: 1,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         padding: 10,
+//         // backgroundColor: 'gray',
+//         height: 400,
+//       }}>
+//       <Text style={{fontSize: 22, marginBottom: 20}}>{todayTitle}</Text>
+//       <Text color="gray.500">{messages.emptyMessage.defaultMessage}</Text>
+//     </View>
+//   );
+
+//   const currentDefaultReport = (
+//     <>
+//       <View
+//         style={{
+//           display: 'flex',
+//           flexDirection: 'row',
+//           marginHorizontal: 10,
+//           marginTop: 10,
+//         }}>
+//         <Text fontSize="sm">{todayTitle}</Text>
+//       </View>
+//       <View style={styles.defaultReportContainer}>
+//         <ReportDetail {...data?.defaultReport} />
+//       </View>
+//     </>
+//   );
+
+//   const isEmpty = data?.defaultReport !== undefined;
+
+//   // const onDisplayNotification = async () => {
+//   //   // Request permissions (required for iOS)
+//   //   await notifee.requestPermission();
+
+//   //   // Create a channel (required for Android)
+//   //   const channelId = await notifee.createChannel({
+//   //     id: 'default',
+//   //     name: 'Default Channel',
+//   //     sound: 'bell',
+//   //   });
+
+//   //   // Display a notification
+//   //   await notifee.displayNotification({
+//   //     title: 'Moi Notification',
+//   //     body: 'Este es un Local Notification de prueba para ver como se ve sin ningun tipo de implementacion.',
+//   //     android: {
+//   //       channelId,
+//   //       sound: 'bell',
+//   //       // smallIcon: 'name-of-a-small-icon', // optional, defaults to 'ic_launcher'.
+//   //       // pressAction is needed if you want the notification to open the app when pressed
+//   //       pressAction: {
+//   //         id: 'default',
+//   //       },
+//   //     },
+//   //   });
+//   // };
+
+//   return (
+//     <>
+//       <ScrollView bg={themePrimary}>
+//         <ScrollView>
+//           <View>{isEmpty ? currentDefaultReport : emptyView}</View>
+//         </ScrollView>
+//         <Modal
+//           isVisible={showModal}
+//           onBackdropPress={() => setShowModal(false)}
+//           onBackButtonPress={() => setShowModal(false)}
+//           swipeDirection="down"
+//           onSwipeComplete={() => setShowModal(false)}
+//           animationIn="bounceInUp"
+//           animationInTiming={500}
+//           animationOut="bounceOutDown"
+//           animationOutTiming={500}>
+//           <View style={styles.modalView} bg={themeSecondary}>
+//             <MonthPicker date={date} setDate={setDate} />
+//             <View
+//               style={{
+//                 display: 'flex',
+//                 flexDirection: 'row',
+//                 marginLeft: 'auto',
+//                 paddingTop: 20,
+//               }}>
+//               <Button variant="ghost" onPress={onCloseModal}>
+//                 {messages.selectMonthYearCancelButtonLabel.defaultMessage}
+//               </Button>
+//               <Button
+//                 style={{marginLeft: 10}}
+//                 // bg="primary.900"
+//                 onPress={onSelectedDateHandler}>
+//                 {messages.selectMonthYearSelectButtonLabel.defaultMessage}
+//               </Button>
+//             </View>
+//           </View>
+//         </Modal>
+//       </ScrollView>
+//       <Fab
+//         style={{width: 56, height: 56}}
+//         onPress={
+//           !isEmpty ? () => setShowModal(true) : () => setOpenActions(true)
+//         }
+//         renderInPortal={false}
+//         // bg="primary.900"
+//         size="lg"
+//         shadow="4"
+//         icon={<AddIcon color="white" />}
+//       />
+//       <AddActionSheet
+//         isOpen={openActions}
+//         onClose={() => setOpenActions(false)}
+//       />
+//     </>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: 'flex-start',
+//     alignItems: 'flex-start',
+//     marginHorizontal: '2%',
+//     marginVertical: '2%',
+//   },
+//   defaultReportContainer: {
+//     paddingHorizontal: 5,
+//     paddingVertical: 5,
+//     flexWrap: 'wrap',
+//     flexDirection: 'row',
+//     display: 'flex',
+//   },
+//   message: {
+//     color: '#6E6E6E',
+//   },
+//   // modalView: {
+//   //   paddingHorizontal: 10,
+//   //   backgroundColor: 'white',
+//   //   borderRadius: 5,
+//   //   shadowColor: '#000',
+//   //   padding: 7,
+//   //   shadowOffset: {
+//   //     width: 0,
+//   //     height: 2,
+//   //   },
+//   //   shadowOpacity: 0.25,
+//   //   shadowRadius: 4,
+//   //   elevation: 5,
+//   // },
+//   centeredView: {
+//     backgroundColor: '#000000AA',
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   modalView: {
+//     margin: 20,
+//     // backgroundColor: 'red',
+//     borderRadius: 5,
+//     paddingVertical: 20,
+//     paddingHorizontal: 20,
+//     alignItems: 'center',
+//     shadowColor: '#000',
+//     shadowOffset: {
+//       width: 0,
+//       height: 2,
+//     },
+//     shadowOpacity: 0.25,
+//     shadowRadius: 4,
+//     elevation: 5,
+//   },
+// });

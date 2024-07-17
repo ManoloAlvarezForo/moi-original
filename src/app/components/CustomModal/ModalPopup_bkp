@@ -1,0 +1,143 @@
+// /* eslint-disable react-native/no-inline-styles */
+// import React, {useCallback, useState, useRef} from 'react';
+// import {StyleSheet, Modal, Animated} from 'react-native';
+// import {View, Button, useTheme} from 'native-base';
+// import messages from '../../screens/Home/Home.messages';
+// import {useDarkMode} from '../../hooks/useDarkMode';
+// import {PANEL_MIDDLE_DARK} from '../../hooks/useDarkMode';
+
+// const DEFAULT_CLOSE_TIME_OUT = 300;
+
+// type ModalPopupProps = {
+//   visible: boolean;
+//   onCloseModal: () => void;
+//   onOkPress: () => void;
+//   onCancelPress?: () => void;
+//   content: any;
+//   header?: any;
+//   headerStyle?: any;
+//   contentStyle?: any;
+// };
+
+// const ModalPopup = ({
+//   visible,
+//   content,
+//   header,
+//   onCloseModal,
+//   onOkPress,
+//   onCancelPress,
+//   headerStyle,
+//   contentStyle,
+// }: ModalPopupProps) => {
+//   const [showModal, setShowModal] = useState(visible);
+//   const scaleValue = useRef(new Animated.Value(0)).current;
+//   const {isDark} = useDarkMode();
+//   const {colors} = useTheme();
+//   const gray50 = colors.coolGray[50];
+//   const toggleModal = useCallback(() => {
+//     if (visible) {
+//       setShowModal(true);
+//       Animated.spring(scaleValue, {
+//         toValue: 1,
+//         delay: 80,
+//         useNativeDriver: true,
+//       }).start();
+//     } else {
+//       Animated.timing(scaleValue, {
+//         toValue: 0,
+//         duration: 0,
+//         // duration: 100,
+//         useNativeDriver: true,
+//       }).start();
+//       setTimeout(() => setShowModal(false), 150);
+//       // setShowModal(false);
+//     }
+//   }, [scaleValue, visible]);
+//   React.useEffect(() => {
+//     toggleModal();
+//   }, [toggleModal, visible]);
+
+//   const onOkPressHandler = () => {
+//     setTimeout(() => {
+//       onOkPress();
+//     }, DEFAULT_CLOSE_TIME_OUT);
+//   };
+
+//   const onCancelPressHandler = () => {
+//     onCancelPress && onCancelPress();
+//     onCloseModal();
+//   };
+
+//   return (
+//     <Modal
+//       transparent
+//       visible={showModal}
+//       onRequestClose={() => setShowModal(!showModal)}>
+//       <View style={styles.modalBackGround}>
+//         <Animated.View
+//           style={[
+//             {
+//               ...styles.modalContainer,
+//               backgroundColor: isDark ? PANEL_MIDDLE_DARK : gray50,
+//             },
+//             {
+//               transform: [
+//                 {
+//                   translateY: scaleValue.interpolate({
+//                     inputRange: [0, 1],
+//                     outputRange: [800, 0],
+//                   }),
+//                 },
+//               ],
+//             },
+//           ]}>
+//           <View style={headerStyle || styles.header}>{header}</View>
+//           <View style={contentStyle || styles.content}>{content}</View>
+//           <View
+//             style={{
+//               display: 'flex',
+//               flexDirection: 'row',
+//               marginLeft: 'auto',
+//               marginTop: 15,
+//             }}>
+//             <Button variant="ghost" onPress={onCancelPressHandler}>
+//               {messages.cancelButtonLabel.defaultMessage}
+//             </Button>
+//             <Button style={{marginLeft: 7}} onPress={onOkPressHandler}>
+//               {messages.okButtonLabel.defaultMessage}
+//             </Button>
+//           </View>
+//         </Animated.View>
+//       </View>
+//     </Modal>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   modalBackGround: {
+//     flex: 1,
+//     backgroundColor: 'rgba(0,0,0,0.5)',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   modalContainer: {
+//     width: '80%',
+//     paddingHorizontal: 20,
+//     paddingTop: 20,
+//     paddingBottom: 20,
+//     borderRadius: 5,
+//     elevation: 20,
+//   },
+//   content: {
+//     display: 'flex',
+//     flexDirection: 'column',
+//   },
+//   header: {
+//     width: '100%',
+//     height: 40,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+// });
+
+// export default ModalPopup;

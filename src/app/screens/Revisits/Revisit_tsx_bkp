@@ -1,0 +1,282 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-native/no-inline-styles */
+import React from 'react';
+import {Box, IconButton, Menu, Text, useTheme, View} from 'native-base';
+import {REVISIT_STATUS_TYPE, RevisitType} from '../../types/user';
+import EllipsisIconOutline from '../../svg/ellipsis-vertical';
+import {APP_COLORS, REPORT_COLORS} from '../../themes/colors';
+import moment from 'moment';
+import {capitalizeText} from '../../utils/dates';
+import {TouchableOpacity} from 'react-native';
+import CountDownTimer from '../../components/CountDownTimer';
+
+export const REVISIT_STATUS = {
+  pending: {bg: REPORT_COLORS.videos, label: 'Por Realizar'},
+  done: {bg: REPORT_COLORS.done, label: 'Realizado'},
+  archived: {bg: REPORT_COLORS.archived, label: 'Archivado'},
+};
+
+type RevisitProps = {
+  revisit: RevisitType;
+  onDeleteRevisit: (arg0: any) => void;
+  onEditRevisit: (arg0: any) => void;
+  onChangeStatus: (arg0: string) => (arg0: string) => void;
+};
+
+const Revisit: React.FC<RevisitProps> = ({
+  revisit,
+  onDeleteRevisit,
+  onEditRevisit,
+  onChangeStatus,
+}: RevisitProps) => {
+  const {
+    colors: {primary},
+  } = useTheme();
+
+  const onDeleteRevisitHandler = () => {
+    onDeleteRevisit(revisit);
+  };
+
+  const onChangeStatusHandler = (status: any) => {
+    onChangeStatus(status)(revisit?.id || '');
+  };
+
+  const onEditRevisitHandler = () => {
+    onEditRevisit(revisit.id);
+  };
+
+  const getCapitalizedDate = () => {
+    return capitalizeText(moment(revisit.dateToReturn).format('dddd LL'));
+  };
+
+  return (
+    <TouchableOpacity activeOpacity={0.7} onPress={() => {}}>
+      <Box
+        marginBottom={1}
+        paddingTop={1}
+        rounded="lg"
+        overflow="hidden"
+        borderColor="coolGray.200"
+        borderWidth="1"
+        _dark={{
+          borderColor: 'coolGray.800',
+          backgroundColor: 'gray.800',
+        }}
+        _light={{
+          backgroundColor: 'gray.50',
+        }}>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+          }}>
+          <View
+            style={{
+              alignItems: 'center',
+              display: 'flex',
+              flexDirection: 'row',
+              paddingTop: 7,
+              paddingLeft: 5,
+            }}>
+            <View style={{marginBottom: 3}}>
+              <Text fontSize={20}>{revisit.name}</Text>
+            </View>
+            <View
+              style={{
+                display: 'flex',
+                marginLeft: 'auto',
+                marginTop: -8,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'baseline',
+                  marginRight: 5,
+                }}>
+                <View
+                  rounded="sm"
+                  bg={REVISIT_STATUS[revisit.status || 'pending'].bg}>
+                  <Text
+                    fontSize={11}
+                    paddingLeft={1.5}
+                    paddingRight={1.5}
+                    paddingBottom={0.5}
+                    _dark={{color: 'black'}}
+                    _light={{color: 'white'}}
+                    style={{fontWeight: '500'}}>
+                    {REVISIT_STATUS[revisit.status || 'pending'].label}
+                  </Text>
+                </View>
+              </View>
+              <View style={{marginLeft: 20}}>
+                <Menu
+                  trigger={triggerProps => {
+                    return (
+                      <IconButton
+                        marginLeft={-5}
+                        rounded="full"
+                        {...triggerProps}>
+                        <EllipsisIconOutline size={18} color={primary[600]} />
+                      </IconButton>
+                    );
+                  }}>
+                  <Menu.Item onPress={onEditRevisitHandler}>Editar</Menu.Item>
+                  <Menu.Item onPress={onDeleteRevisitHandler}>
+                    Eliminar
+                  </Menu.Item>
+                  {revisit.status !== REVISIT_STATUS_TYPE.ARCHIVED && (
+                    <Menu.Item
+                      textValue="archived"
+                      onPress={() =>
+                        onChangeStatusHandler(REVISIT_STATUS_TYPE.ARCHIVED)
+                      }>
+                      Archivar
+                    </Menu.Item>
+                  )}
+                  {revisit.status !== REVISIT_STATUS_TYPE.DONE && (
+                    <Menu.Item
+                      textValue="done"
+                      onPress={() =>
+                        onChangeStatusHandler(REVISIT_STATUS_TYPE.DONE)
+                      }>
+                      Marcar como Realizado
+                    </Menu.Item>
+                  )}
+                  {revisit.status !== REVISIT_STATUS_TYPE.PENDING && (
+                    <Menu.Item
+                      textValue="pending"
+                      onPress={() =>
+                        onChangeStatusHandler(REVISIT_STATUS_TYPE.PENDING)
+                      }>
+                      Marcar Por Realizar
+                    </Menu.Item>
+                  )}
+                </Menu>
+              </View>
+            </View>
+          </View>
+          <View paddingLeft={3} paddingRight={3} paddingTop={2}>
+            <View
+              paddingBottom={5}
+              style={{
+                flexDirection: 'column',
+                display: 'flex',
+              }}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}>
+                <View marginTop={2} marginBottom={0.5}>
+                  <Text style={{fontWeight: '600'}}>Direccion</Text>
+                </View>
+                <View
+                  rounded="sm"
+                  paddingTop={1}
+                  paddingBottom={1}
+                  paddingLeft={2}
+                  paddingRight={2}
+                  _dark={{
+                    backgroundColor: 'gray.600',
+                  }}
+                  _light={{
+                    backgroundColor: APP_COLORS.appGrayLow,
+                  }}>
+                  <CountDownTimer
+                    targetDate={revisit.dateToReturn}
+                    targetTime={revisit.timeToReturn}
+                  />
+                </View>
+              </View>
+              <View style={{display: 'flex', flexDirection: 'column'}}>
+                <View marginTop={2} marginBottom={0.5}>
+                  <Text style={{fontWeight: '600'}}>Fecha y Hora</Text>
+                </View>
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                  }}>
+                  <View
+                    rounded="sm"
+                    marginRight={1}
+                    paddingTop={1}
+                    paddingBottom={1}
+                    paddingLeft={2}
+                    paddingRight={2}
+                    _dark={{
+                      backgroundColor: 'gray.600',
+                    }}
+                    _light={{
+                      backgroundColor: APP_COLORS.appGrayLow,
+                    }}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                    }}>
+                    <Text>{getCapitalizedDate()}</Text>
+                  </View>
+                  <View
+                    rounded="sm"
+                    paddingTop={1}
+                    paddingBottom={1}
+                    paddingLeft={2}
+                    paddingRight={2}
+                    marginRight={1}
+                    _dark={{
+                      backgroundColor: 'gray.600',
+                    }}
+                    _light={{
+                      backgroundColor: APP_COLORS.appGrayLow,
+                    }}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                    }}>
+                    <Text>
+                      {moment(revisit.timeToReturn).format('hh:mm A')}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              {revisit.additionalInfo && (
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}>
+                  <View marginTop={2} marginBottom={0.5}>
+                    <Text style={{fontWeight: '600'}}>
+                      Informacion adicional
+                    </Text>
+                  </View>
+                  <View
+                    rounded="sm"
+                    padding={2}
+                    _dark={{
+                      backgroundColor: 'gray.600',
+                    }}
+                    _light={{
+                      backgroundColor: APP_COLORS.appGrayLow,
+                    }}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                    }}>
+                    <Text>{revisit.additionalInfo}</Text>
+                  </View>
+                </View>
+              )}
+            </View>
+          </View>
+        </View>
+      </Box>
+    </TouchableOpacity>
+  );
+};
+
+export default Revisit;

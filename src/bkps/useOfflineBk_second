@@ -1,0 +1,269 @@
+/* eslint-disable react/react-in-jsx-scope */
+import {useCallback, useMemo} from 'react';
+import {useApolloClient} from '@apollo/client';
+import {
+  DEFAULT_REPORT_GQL,
+  GET_REPORTS,
+  GET_USER,
+} from '../screens/Reports/gqlQueries';
+import {useAuth} from './useAuth';
+import {ActivityPropsType} from '../types/activities';
+import {ReportType} from '../types/report';
+import {UserType} from '../types/user';
+import moment from 'moment';
+import {Box, useToast} from 'native-base';
+
+// TODO: refactor the types to typescript.
+export function useOffline() {
+  const {cache} = useApolloClient();
+  const {
+    auth: {getUserId},
+  } = useAuth();
+  const toast = useToast();
+
+  const getDefaultReportMethod = useCallback(() => {
+    const data: any = cache.readQuery({query: GET_REPORTS});
+    const foundDefaultReport = data?.reports?.find(
+      (r: any) => r.isDefault === true,
+    );
+    console.log('foundDefaultReport: ', foundDefaultReport);
+    return foundDefaultReport;
+  }, [cache]);
+
+  const offlineCache = useMemo(
+    () => ({
+      addUser: (user: UserType) => {
+        cache.updateQuery(
+          {
+            query: GET_USER,
+            variables: user,
+          },
+          () => ({
+            user: user,
+          }),
+        );
+      },
+      user: () => {
+        const data: any = cache.readQuery({query: GET_USER});
+        return data?.user;
+      },
+      getUserName: () => {
+        const data: any = cache.readQuery({query: GET_USER});
+        return data?.user?.name;
+      },
+      getUserId: () => {
+        const data: any = cache.readQuery({query: GET_USER});
+        return data?.user?.id;
+      },
+      addReport: (newReport: any) => {
+        const data: any = cache.readQuery({query: GET_REPORTS});
+
+        cache.writeQuery({
+          query: GET_REPORTS,
+          data: {
+            reports: [...(data?.reports || []), newReport],
+          },
+        });
+      },
+      getDefaultReport: () => {
+        const foundDefaultReport = getDefaultReportMethod();
+        return foundDefaultReport;
+      },
+      getDefaultReportParsedMonth: () => {
+        const foundDefaultReport = getDefaultReportMethod();
+        return moment(foundDefaultReport.month, 'M').format('MMMM');
+      },
+      getDefaultReportParsedYear: () => {
+        const foundDefaultReport = getDefaultReportMethod();
+        return moment(foundDefaultReport.year, 'Y').format('YYYY');
+      },
+      getDefaultReportParsedMonthAndYear: () => {
+        const foundDefaultReport = getDefaultReportMethod();
+        const monthParsed = moment(foundDefaultReport.month, 'M').format(
+          'MMMM',
+        );
+        const yearParsed = moment(foundDefaultReport.year, 'Y').format('YYYY');
+        return `${monthParsed} ${yearParsed}`;
+      },
+      setDefaultReport: async (report: any) => {
+        const foundDefaultReport = getDefaultReportMethod();
+        const userId = await getUserId();
+
+        const newDefaultReport = {
+          userId,
+          ...foundDefaultReport,
+        };
+
+        cache.updateQuery(
+          {
+            query: DEFAULT_REPORT_GQL,
+            variables: {...newDefaultReport, ...report},
+          },
+          () => ({
+            defaultReport: {...newDefaultReport, ...report},
+          }),
+        );
+      },
+      addRevisit: () => {
+        const foundDefaultReport: ReportType = getDefaultReportMethod();
+
+        const newDefaultReport = {
+          bibleStudies: foundDefaultReport.bibleStudies + 1,
+        };
+
+        cache.updateQuery(
+          {
+            query: DEFAULT_REPORT_GQL,
+            variables: {...foundDefaultReport, ...newDefaultReport},
+          },
+          () => ({
+            defaultReport: {...foundDefaultReport, ...newDefaultReport},
+          }),
+        );
+
+        toast.show({
+          description: 'Revisita agregada correctamente',
+        });
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
+                Revisita agregada correctamente
+              </Box>
+            );
+          },
+        });
+      },
+      addBibleStudy: () => {
+        const foundDefaultReport: ReportType = getDefaultReportMethod();
+
+        const newDefaultReport = {
+          bibleStudies: foundDefaultReport.bibleStudies + 1,
+        };
+
+        cache.updateQuery(
+          {
+            query: DEFAULT_REPORT_GQL,
+            variables: {...foundDefaultReport, ...newDefaultReport},
+          },
+          () => ({
+            defaultReport: {...foundDefaultReport, ...newDefaultReport},
+          }),
+        );
+
+        // toast.show({
+        //   description: 'Estudio Biblico agregado correctamente',
+        // });
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
+                Estudio Biblico agregado correctamente
+              </Box>
+            );
+          },
+        });
+      },
+      addActivity: (activity: ActivityPropsType) => {
+        const foundDefaultReport: ReportType = getDefaultReportMethod();
+        const newActivities = [...foundDefaultReport.activities, activity];
+
+        const activitiesByDate = newActivities.reduce(
+          (group: any, newActivity) => {
+            const formattedDate = moment(newActivity.date).format('YYYY-MM-DD');
+
+            group[formattedDate] = group[formattedDate] ?? [];
+            group[formattedDate].push(newActivity);
+            return group;
+          },
+          {},
+        );
+
+        const newDefaultReport = {
+          hours: foundDefaultReport.hours + activity.hours,
+          publications: foundDefaultReport.publications + activity.publications,
+          revisits: foundDefaultReport.revisits + activity.revisits,
+          videos: foundDefaultReport.videos + activity.videos,
+          // TODO: Refactor add activity in the array to merged t
+          activities: newActivities,
+          activitiesByDate: activitiesByDate,
+          // __typename: 'Report',
+          // id: foundDefaultReport.id,
+          // userId: foundDefaultReport.userId,
+          // month: foundDefaultReport.month,
+          // year: foundDefaultReport.year,
+          // isDefault: foundDefaultReport.isDefault,
+          // bibleStudies: foundDefaultReport.bibleStudies,
+          // isCompleted: foundDefaultReport.isCompleted,
+          // isSent: foundDefaultReport.isSent,
+        };
+
+        cache.updateQuery(
+          {
+            query: DEFAULT_REPORT_GQL,
+            variables: {...foundDefaultReport, ...newDefaultReport},
+          },
+          () => ({
+            defaultReport: {...foundDefaultReport, ...newDefaultReport},
+          }),
+        );
+
+        toast.show({
+          description: 'Actividad agregada correctamente',
+        });
+      },
+      getActivitiesByCurrentDefaultReport: () => {
+        const {activities} = getDefaultReportMethod();
+        return activities;
+      },
+      updateDefaultReport: async (report: any) => {
+        const data: any = cache.readQuery({query: GET_REPORTS});
+        const foundDefaultReport = data?.reports.find(
+          (r: any) => r.isDefault === true,
+        );
+
+        // const hours = foundDefaultReport.hours + report.hours;
+
+        // const firstDefaultReport = {
+        //   id: `report-${moment().format('MM-YYYY')}`,
+        //   userId,
+        //   month: (new Date().getMonth() + 1).toString(),
+        //   year: new Date().getFullYear().toString(),
+        //   isDefault: true,
+        //   hours,
+        //   videos: foundDefaultReport.videos + report.videos,
+        //   bibleStudies: foundDefaultReport.bibleStudies + report.bibleStudies,
+        //   revisits: foundDefaultReport.revisits + report.revisits,
+        //   isCompleted: false,
+        //   publications: foundDefaultReport.publications + report.publications,
+        //   isSent: false,
+        //   activities: [],
+        //   __typename: 'Report',
+        // };
+
+        // const toReplace = {...foundDefaultReport, ...report};
+
+        const updatedReport = {...foundDefaultReport, ...report};
+        cache.writeQuery({
+          query: GET_REPORTS,
+          data: {
+            reports: [...(data?.reports || []), updatedReport],
+          },
+        });
+
+        cache.updateQuery(
+          {
+            query: DEFAULT_REPORT_GQL,
+            variables: updatedReport,
+          },
+          () => ({
+            defaultReport: updatedReport,
+          }),
+        );
+      },
+    }),
+    [cache, getDefaultReportMethod, getUserId, toast],
+  );
+
+  return {offlineCache};
+}

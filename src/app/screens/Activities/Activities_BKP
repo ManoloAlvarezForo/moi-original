@@ -1,0 +1,184 @@
+// // /* eslint-disable react/no-unstable-nested-components */
+// /* eslint-disable react-native/no-inline-styles */
+// import React, {useState} from 'react';
+// import {StyleSheet} from 'react-native';
+// import {AddIcon, Fab, Heading, ScrollView, Text, View} from 'native-base';
+// import {useOfflineReport} from '../../hooks/useOfflineReport';
+// import {useNavigation} from '@react-navigation/native';
+// import moment from 'moment';
+// import Activity from './Activity';
+// import {ActivityPropsType} from '../../types/activities';
+// import {useDarkMode} from '../../hooks/useDarkMode';
+// import EmptyView from '../../components/EmptyView';
+// import ModalPopup from '../../components/CustomModal/ModalPopup';
+// import {useOfflineRecord} from '../../hooks/useOfflineRecord';
+
+// const Activities = () => {
+//   const {themePrimary} = useDarkMode();
+//   const {navigate} = useNavigation<any>();
+//   const [showModal, setShowModal] = useState<boolean>(false);
+//   const [selectedActivity, setSelectedActivity] =
+//     useState<ActivityPropsType | null>();
+//   const {deleteActivity} = useOfflineRecord();
+
+//   const getFormattedDate = (date: string) => {
+//     const newDate = moment(date);
+
+//     return `${newDate
+//       .format('ddd')
+//       .replace(/^\w/, c => c.toUpperCase())} ${newDate.format('D')}`;
+//   };
+
+//   const {defaultReport} = useOfflineReport();
+//   let activityKeys: any;
+
+//   if (defaultReport) {
+//     // TODO: refactor this for the filter by date or the internal activity date.
+//     activityKeys =
+//       Object.keys(defaultReport.activitiesByDate).sort((a, b) => {
+//         const aDate = new Date(a);
+//         const bDate = new Date(b);
+
+//         return aDate > bDate ? -1 : aDate < bDate ? 1 : 0;
+//       }) || [];
+//   }
+
+//   const onCreateActivityHandler = () => {
+//     navigate('CreateActivity');
+//   };
+
+//   const onOkPressHandler = () => {
+//     setTimeout(() => {
+//       deleteActivity(selectedActivity);
+//     }, 300);
+//     // deleteActivity(selectedActivity);
+//     setShowModal(false);
+//   };
+
+//   const onDeleteActivityHandler = (activityToBeRemoved: any) => {
+//     setSelectedActivity(activityToBeRemoved);
+//     setShowModal(true);
+//   };
+
+//   const cancelDeleteActivity = () => {
+//     setSelectedActivity(null);
+//   };
+
+//   const onEditActivityHandler = (activityToEdit: any) => {
+//     navigate('CreateActivity', {activityId: activityToEdit.id});
+//   };
+
+//   return (
+//     <>
+//       {defaultReport ? (
+//         defaultReport.activities.length > 0 ? (
+//           <>
+//             <ScrollView bg={themePrimary}>
+//               {activityKeys.map((key: string, idx: number) => (
+//                 <View
+//                   key={idx}
+//                   style={{
+//                     display: 'flex',
+//                     flexDirection: 'column',
+//                   }}>
+//                   <View
+//                     bg="primary.600"
+//                     style={{
+//                       display: 'flex',
+//                       width: 70,
+//                       borderTopLeftRadius: 5,
+//                       borderTopRightRadius: 5,
+//                       padding: 5,
+//                       marginTop: 6,
+//                       marginLeft: 20,
+//                     }}>
+//                     <Heading color="white" textAlign="center" fontSize={14}>
+//                       {getFormattedDate(key)}
+//                     </Heading>
+//                   </View>
+//                   <View
+//                     style={{
+//                       paddingLeft: 7,
+//                       paddingRight: 7,
+//                       display: 'flex',
+//                       flexDirection: 'column',
+//                     }}>
+//                     {defaultReport.activitiesByDate[key].map(
+//                       (activity: ActivityPropsType, activityIdx: number) => (
+//                         <Activity
+//                           onDeleteActivity={() =>
+//                             onDeleteActivityHandler(activity)
+//                           }
+//                           onEditActivity={() => onEditActivityHandler(activity)}
+//                           activity={activity}
+//                           key={key + activityIdx}
+//                         />
+//                       ),
+//                     )}
+//                   </View>
+//                 </View>
+//               ))}
+//             </ScrollView>
+//             <Fab
+//               style={styles.fab}
+//               onPress={onCreateActivityHandler}
+//               renderInPortal={false}
+//               size="lg"
+//               shadow="4"
+//               icon={<AddIcon color="white" />}
+//             />
+//           </>
+//         ) : (
+//           <View bg={themePrimary} style={styles.emptyContainer}>
+//             <Text>No tiene actividades</Text>
+//             <Fab
+//               style={styles.fab}
+//               onPress={onCreateActivityHandler}
+//               renderInPortal={false}
+//               size="lg"
+//               shadow="4"
+//               icon={<AddIcon color="white" />}
+//             />
+//           </View>
+//         )
+//       ) : (
+//         <EmptyView label="No tiene ningun informe asignado" />
+//       )}
+//       <ModalPopup
+//         visible={showModal}
+//         onCloseModal={() => setShowModal(false)}
+//         onOkPress={onOkPressHandler}
+//         onCancelPress={cancelDeleteActivity}
+//         headerStyle={{
+//           display: 'flex',
+//           flexDirection: 'row',
+//           justifyContent: 'flex-start',
+//           alignItems: 'flex-start',
+//           marginBottom: 10,
+//         }}
+//         header={
+//           <View>
+//             <Text fontSize={15} bold>
+//               Eliminar Actividad
+//             </Text>
+//           </View>
+//         }
+//         content={
+//           <View>
+//             <Text>
+//               Esta seguro que quiere eliminar la actividad? No podra recuperar
+//               esta despues de ser eliminada.
+//             </Text>
+//           </View>
+//         }
+//       />
+//     </>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   fab: {width: 56, height: 56},
+//   emptyContainer: {flex: 1, justifyContent: 'center', alignItems: 'center'},
+// });
+
+// export default Activities;

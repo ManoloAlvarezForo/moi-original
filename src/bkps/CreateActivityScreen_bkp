@@ -1,0 +1,48 @@
+// /* eslint-disable react-native/no-inline-styles */
+// import React from 'react';
+// import {createStackNavigator} from '@react-navigation/stack';
+// import CreateActivityModal from './CreateActivityScreenModal';
+// import {CloseIcon, IconButton} from 'native-base';
+// import {useNavigation} from '@react-navigation/native';
+// import {useDarkMode} from '../../hooks/useDarkMode';
+
+// const ActivityStack = createStackNavigator();
+
+// const ActivityScreen = () => {
+//   // console.log('ActivityScreen route', route);
+//   const {goBack} = useNavigation();
+//   const {textColor, themeSecondary} = useDarkMode();
+
+//   const getOptionsButton = () => {
+//     return (
+//       <IconButton
+//         onPress={() => goBack()}
+//         rounded="full"
+//         size="sm"
+//         style={{marginRight: 8}}
+//         icon={<CloseIcon color={textColor} />}
+//       />
+//     );
+//   };
+
+//   return (
+//     <ActivityStack.Screen
+//       name={'NewActivity'}
+//       component={CreateActivityModal}
+//       options={{
+//         headerTitle: 'Actividad',
+//         headerTitleAlign: 'left',
+//         headerTitleStyle: {
+//           color: textColor,
+//           fontSize: 19,
+//           marginLeft: -5,
+//         },
+//         headerStyle: {backgroundColor: themeSecondary},
+//         headerLeft: () => null,
+//         headerRight: getOptionsButton,
+//       }}
+//     />
+//   );
+// };
+
+// export default ActivityScreen;

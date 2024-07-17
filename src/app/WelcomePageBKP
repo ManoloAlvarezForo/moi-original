@@ -1,0 +1,188 @@
+// /* eslint-disable react-native/no-inline-styles */
+
+// import React, {useState} from 'react';
+// import {StyleSheet} from 'react-native';
+// import {
+//   Button,
+//   FormControl,
+//   Input,
+//   View,
+//   Text,
+//   Heading,
+//   StatusBar,
+// } from 'native-base';
+// import MoiLogo from './svg/moi-logo-new';
+// import {useOfflineUser} from './hooks/useOfflineUser';
+
+// const PANEL_BACKGROUND_COLOR = '#18181b';
+// // const PANEL_BACKGROUND_COLOR = '#3f3f46';
+
+// type PersonalData = {
+//   name: string;
+// };
+
+// const initialData: PersonalData = {
+//   name: '',
+// };
+
+// const WelcomePage = () => {
+//   const {addUser} = useOfflineUser();
+//   const [formData, setData] = useState<PersonalData>(initialData);
+//   const [errors, setErrors] = useState({});
+
+//   const validateData = (data: PersonalData) => {
+//     if (data.name === '') {
+//       setErrors({...errors, name: 'Name is required'});
+//       return false;
+//     }
+
+//     setErrors({});
+//     return true;
+//   };
+
+//   const submitUser = () => {
+//     const {name} = formData;
+//     // const userNameFormatted = name.replace(' ', '.');
+//     // const user: UserType = {
+//     //   name,
+//     //   email: `offline-user-${userNameFormatted}@offline.com`,
+//     //   id: `local.user.${userNameFormatted}`,
+//     //   token: `local-user-${userNameFormatted}`,
+//     //   bibleStudies: [],
+//     //   revisits: [],
+//     // };
+//     addUser(name);
+//   };
+
+//   const onSubmit = () => {
+//     validateData(formData) && submitUser();
+//   };
+
+//   const onChangeTextHandler = (value: any) => {
+//     const newData = {...formData, name: value};
+//     validateData(newData);
+//     setData(newData);
+//   };
+
+//   return (
+//     <View style={{backgroundColor: PANEL_BACKGROUND_COLOR}}>
+//       <StatusBar
+//         backgroundColor={PANEL_BACKGROUND_COLOR}
+//         barStyle={'light-content'}
+//       />
+//       <View style={styles.container}>
+//         <View style={styles.logo}>
+//           <MoiLogo />
+//         </View>
+//         <View style={{paddingBottom: 50}}>
+//           <Heading style={{fontWeight: '500', fontSize: 29, color: 'white'}}>
+//             Bienvenido a Moi
+//           </Heading>
+//         </View>
+//         <View style={styles.mainPanel}>
+//           <View
+//             style={{
+//               display: 'flex',
+//               justifyContent: 'center',
+//               marginBottom: 10,
+//             }}>
+//             <Text
+//               color="gray.700"
+//               style={{
+//                 textAlign: 'justify',
+//                 justifyContent: 'center',
+//               }}>
+//               Esta aplicacion puede ayudarle a organizar mejor sus informes de
+//               servicio.
+//             </Text>
+//           </View>
+//           <FormControl isInvalid={'name' in errors}>
+//             <FormControl.Label
+//               style={{marginBottom: 5}}
+//               _text={{
+//                 bold: true,
+//                 fontSize: 15,
+//                 color: 'gray.500',
+//               }}>
+//               Nombre completo
+//             </FormControl.Label>
+//             <Input
+//               borderColor="gray.500"
+//               _dark={{color: 'darl.200'}}
+//               value={formData.name}
+//               placeholder="Eje. Matias Alvarez Arispe"
+//               size="xl"
+//               width="100%"
+//               onChangeText={onChangeTextHandler}
+//             />
+//             {'name' in errors ? (
+//               <FormControl.ErrorMessage>
+//                 Debe ingresar un Nombre
+//               </FormControl.ErrorMessage>
+//             ) : (
+//               <FormControl.HelperText>
+//                 Puede ingresar su Nombre y Apellidos.
+//               </FormControl.HelperText>
+//             )}
+//             <View
+//               style={{
+//                 display: 'flex',
+//                 flexDirection: 'row',
+//               }}>
+//               <Button
+//                 size="lg"
+//                 style={{display: 'flex', justifyContent: 'center'}}
+//                 onPress={onSubmit}
+//                 mt="5">
+//                 INGRESAR
+//               </Button>
+//             </View>
+//           </FormControl>
+//         </View>
+//       </View>
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     display: 'flex',
+//     justifyContent: 'center',
+//     alignContent: 'center',
+//     alignItems: 'center',
+//     flexDirection: 'column',
+//     marginRight: 15,
+//     marginLeft: 15,
+//     backgroundColor: PANEL_BACKGROUND_COLOR,
+//   },
+//   logo: {
+//     height: '40%',
+//     width: '100%',
+//     display: 'flex',
+//     backgroundColor: PANEL_BACKGROUND_COLOR,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     alignContent: 'center',
+//   },
+//   inputContainer: {
+//     height: '50%',
+//     width: '100%',
+//     paddingTop: 30,
+//     paddingLeft: 20,
+//     paddingRight: 20,
+//     borderTopRightRadius: 10,
+//     borderTopLeftRadius: 10,
+//   },
+//   mainPanel: {
+//     height: 800,
+//     width: '100%',
+//     paddingTop: 30,
+//     paddingLeft: 20,
+//     paddingRight: 20,
+//     borderTopRightRadius: 10,
+//     borderTopLeftRadius: 10,
+//     backgroundColor: '#fafafa',
+//   },
+// });
+
+// export default WelcomePage;

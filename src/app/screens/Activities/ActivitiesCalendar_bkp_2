@@ -1,0 +1,159 @@
+// import React, {Dispatch, SetStateAction} from 'react';
+// import {View, Text} from 'native-base';
+// import {StyleSheet, TouchableOpacity} from 'react-native';
+// import {
+//   Agenda,
+//   AgendaEntry,
+//   AgendaSchedule,
+//   LocaleConfig,
+// } from 'react-native-calendars';
+// import testIDs from './testIDs';
+// import moment from 'moment';
+
+// LocaleConfig.locales.en = {
+//   monthNames: [
+//     'Enero',
+//     'Febrero',
+//     'Marzo',
+//     'Abril',
+//     'Mayo',
+//     'Junio',
+//     'Julio',
+//     'Agosto',
+//     'Septiembre',
+//     'Octubre',
+//     'Noviembre',
+//     'Diciembre',
+//   ],
+//   monthNamesShort: [
+//     'Ene.',
+//     'Feb.',
+//     'Mar.',
+//     'Abr.',
+//     'May.',
+//     'Jun.',
+//     'Jul.',
+//     'Ago.',
+//     'Sep.',
+//     'Oct.',
+//     'Nov.',
+//     'Dic.',
+//   ],
+//   dayNames: [
+//     'Domingo',
+//     'Lunes',
+//     'Martes',
+//     'Miercoles',
+//     'Jueves',
+//     'Viernes',
+//     'Sabado',
+//   ],
+//   dayNamesShort: ['Dom.', 'Lun.', 'Mar.', 'Mie.', 'Jue.', 'Vie.', 'Sab.'],
+//   today: "Aujourd'hui",
+// };
+
+// LocaleConfig.defaultLocale = 'en';
+
+// type ActivitiesCalendarProps = {
+//   activities: AgendaSchedule;
+//   setActivities: Dispatch<SetStateAction<any>>;
+// };
+
+// const ActivitiesCalendar: React.FC<ActivitiesCalendarProps> = ({
+//   activities,
+//   setActivities,
+// }) => {
+//   const renderItem = (reservation: AgendaEntry) => {
+//     return (
+//       <TouchableOpacity
+//         testID={testIDs.agenda.ITEM}
+//         style={[styles.item, {height: reservation.height}]}
+//         onPress={() => console.log(reservation.name)}>
+//         <Text>{reservation.name}</Text>
+//       </TouchableOpacity>
+//     );
+//   };
+
+//   const renderEmptyDate = () => {
+//     return (
+//       <View style={styles.emptyDate}>
+//         <Text>This is empty date!</Text>
+//       </View>
+//     );
+//   };
+
+//   const rowHasChanged = (r1: AgendaEntry, r2: AgendaEntry) => {
+//     return r1.name !== r2.name;
+//   };
+
+//   const theme = {
+//     agendaDayNumColor: 'green',
+//     agendaKnobColor: 'green',
+//     agendaDayTextColor: 'blue',
+//     agendaTodayColor: 'green',
+//     selectedDayBackgroundColor: 'lightblue',
+//     selectedDayTextColor: 'white',
+//     dayTextColor: 'black',
+//     textDisabledColor: 'gray',
+//     dotColor: 'blue',
+//     selectedDotColor: 'orange',
+//     arrowColor: 'brown',
+//     monthTextColor: 'purple',
+//     textDayFontFamily: 'Arial',
+//     textMonthFontFamily: 'Arial',
+//     textDayHeaderFontFamily: 'Arial',
+//     agendaDayTextFontFamily: 'Arial',
+//   };
+
+//   const today = moment().format('YYYY-MM-DD');
+
+//   return (
+//     <View style={{flex: 1}}>
+//       <Agenda
+//         testID={testIDs.agenda.CONTAINER}
+//         items={activities}
+//         // loadItemsForMonth={setActivities}
+//         selected={today}
+//         renderItem={renderItem}
+//         renderEmptyDate={renderEmptyDate}
+//         rowHasChanged={rowHasChanged}
+//         showClosingKnob={true}
+//         theme={theme}
+//         // markedDates={{
+//         //   '2017-05-08': {textColor: '#43515c'},
+//         //   '2017-05-09': {textColor: '#43515c'},
+//         //   '2017-05-14': {startingDay: true, endingDay: true, color: 'blue'},
+//         //   '2017-05-21': {startingDay: true, color: 'blue'},
+//         //   '2017-05-22': {endingDay: true, color: 'gray'},
+//         //   '2017-05-24': {startingDay: true, color: 'gray'},
+//         //   '2017-05-25': {color: 'gray'},
+//         //   '2017-05-26': {endingDay: true, color: 'gray'},
+//         // }}
+//         // monthFormat={'yyyy'}
+//         // theme={{calendarBackground: 'red', agendaKnobColor: 'green'}}
+//         // renderDay={(day, item) => <Text>{day ? day.day : 'item'}</Text>}
+//         // hideExtraDays={false}
+//         // showOnlySelectedDayItems={false}
+//         // reservationsKeyExtractor={this.reservationsKeyExtractor}
+//       />
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   item: {
+//     backgroundColor: 'white',
+//     flex: 1,
+//     borderRadius: 5,
+//     padding: 10,
+//     marginRight: 10,
+//     marginTop: 17,
+//   },
+//   emptyDate: {
+//     height: 15,
+//     flex: 1,
+//     paddingTop: 30,
+//   },
+// });
+
+// export default ActivitiesCalendar;

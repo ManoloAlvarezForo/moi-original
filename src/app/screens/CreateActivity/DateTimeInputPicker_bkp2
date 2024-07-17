@@ -1,0 +1,125 @@
+// /* eslint-disable react-native/no-inline-styles */
+// import React, {useState} from 'react';
+// import {FormControl, Input, Pressable, View} from 'native-base';
+// import moment from 'moment';
+// import {CalendarWrapper} from './CalendarWrapper';
+// import ModalPopup from '../../components/CustomModal/ModalPopup';
+// import DatePicker from 'react-native-date-picker';
+// import {capitalizeText} from '../../utils/dates';
+
+// type DateTimeInputPickerProps = {
+//   label: string;
+//   onChangeData: (arg0: any) => void;
+//   formData: any;
+//   errors: any;
+//   keyProp: string;
+//   dateTimeFormat?: string;
+//   mode?: 'datetime' | 'date' | 'time';
+// };
+
+// const DateTimeInputPicker: React.FC<DateTimeInputPickerProps> = ({
+//   label,
+//   formData,
+//   onChangeData,
+//   errors,
+//   keyProp,
+//   mode = 'date',
+//   dateTimeFormat = mode !== 'time' ? 'hh:mm A' : 'LL',
+// }: DateTimeInputPickerProps) => {
+//   const [show, setShow] = useState(false);
+//   const [selectedDate, setSelectedDate] = useState(
+//     moment(formData[keyProp]).format('YYYY-MM-DD'),
+//   );
+
+//   const [date] = useState(new Date());
+
+//   console.log('date ', moment(date));
+
+//   const onOkPressHandle = () => {
+//     onChangeData({...formData, [keyProp]: selectedDate});
+//     setShow(false);
+//   };
+
+//   const capitalizedFormattedDate = capitalizeText(
+//     moment(selectedDate).format(dateTimeFormat),
+//   );
+
+//   const onDayPressHandler = (value: any) => {
+//     setSelectedDate(moment(value.date).format('YYYY-MM-DD'));
+//   };
+
+//   console.log('formData tm  ', formData[keyProp]);
+
+//   // const customDate: any = new Date(formData[keyProp]) || new Date();
+//   // console.log('customDate tm  ', customDate[keyProp]);
+
+//   return (
+//     <View style={{marginVertical: 3}}>
+//       <FormControl.Label
+//         style={{marginBottom: 5}}
+//         _text={{
+//           bold: true,
+//           fontSize: 15,
+//         }}>
+//         {label}
+//       </FormControl.Label>
+//       <Pressable onPress={() => setShow(true)}>
+//         <Input
+//           isHovered={false}
+//           onPressIn={() => setShow(true)}
+//           isReadOnly
+//           showSoftInputOnFocus={false}
+//           value={capitalizedFormattedDate}
+//           size="lg"
+//           onChangeText={value => onChangeData({...formData, [keyProp]: value})}
+//         />
+//       </Pressable>
+//       {label in errors && (
+//         <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
+//       )}
+//       {mode === 'date' ? (
+//         <ModalPopup
+//           visible={show}
+//           size="full"
+//           okLabel="Seleccionar"
+//           onCloseModal={() => setShow(false)}
+//           onOkPress={onOkPressHandle}
+//           onCancelPress={() => setShow(false)}
+//           bodyStyle={{padding: 0}}
+//           content={
+//             <CalendarWrapper
+//               selectedDateProp={selectedDate}
+//               formData={formData}
+//               onDayPressHandler={value => onDayPressHandler(value)}
+//             />
+//           }
+//         />
+//       ) : (
+//         <DatePicker
+//           title={label}
+//           locale="es"
+//           mode={mode}
+//           androidVariant="iosClone"
+//           modal
+//           open={show}
+//           date={date}
+//           cancelText="Cancelar"
+//           confirmText="Seleccionar"
+//           onConfirm={(dateParam: any) => {
+//             const value = moment(dateParam as Date).format();
+//             setShow(false);
+//             onChangeData({
+//               ...formData,
+//               [keyProp]: value,
+//             });
+//           }}
+//           onCancel={() => {
+//             setShow(false);
+//           }}
+//         />
+//       )}
+//     </View>
+//   );
+// };
+
+// export default DateTimeInputPicker;
